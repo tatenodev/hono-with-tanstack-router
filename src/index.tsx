@@ -23,7 +23,7 @@ app.get("*", (c) => {
 					{import.meta.env.PROD ? (
 						<script type="module" src="/static/client.js" />
 					) : (
-						<script type="module" src="/src/client.tsx" />
+						<script type="module" src="/src/main.tsx" />
 					)}
 				</head>
 				<body>
