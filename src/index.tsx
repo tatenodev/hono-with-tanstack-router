@@ -21,13 +21,9 @@ app.get("*", (c) => {
 						href="https://cdn.simplecss.org/simple.min.css"
 					/>
 					{import.meta.env.PROD ? (
-						<>
-							<script type="module" src="/static/client.js" />
-						</>
+						<script type="module" src="/static/client.js" />
 					) : (
-						<>
-							<script type="module" src="/src/client.tsx" />
-						</>
+						<script type="module" src="/src/client.tsx" />
 					)}
 				</head>
 				<body>
