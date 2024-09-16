@@ -29,16 +29,3 @@ export default defineConfig(({ mode }) => {
 		],
 	};
 });
-
-// export default defineConfig({
-// 	ssr: {
-// 		external: ["react", "react-dom"],
-// 	},
-// 	plugins: [
-// 		build(),
-// 		devServer({
-// 			adapter,
-// 			entry: "src/index.tsx",
-// 		}),
-// 	],
-// });
