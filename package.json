@@ -2,7 +2,7 @@
 	"name": "hono-and-react",
 	"type": "module",
 	"scripts": {
-		"generate-routes": "tsr generate",
+		"gen:routes": "tsr generate",
 		"watch-routes": "tsr watch",
 		"dev": "vite",
 		"build": "npm run generate-routes && vite build --mode client && vite build",
