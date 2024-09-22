@@ -1,11 +1,23 @@
+import { drizzle } from "drizzle-orm/d1";
 import { Hono } from "hono";
 import { renderToString } from "react-dom/server";
+import { users } from "./schema";
 
-const app = new Hono();
+type Env = {
+	Bindings: {
+		DB: D1Database;
+	};
+};
 
-app.get("/api/clock", (c) => {
+const app = new Hono<Env>();
+
+app.get("/api/clock", async (c) => {
+	const db = drizzle(c.env.DB);
+	const result = await db.select().from(users).all();
+
 	return c.json({
 		time: new Date().toLocaleTimeString(),
+		users: result,
 	});
 });
 
