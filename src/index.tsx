@@ -1,7 +1,11 @@
 import { drizzle } from "drizzle-orm/d1";
 import { Hono } from "hono";
 import { renderToString } from "react-dom/server";
+
 import { users } from "./schema";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
+import { eq } from "drizzle-orm";
 
 type Env = {
 	Bindings: {
@@ -20,6 +24,58 @@ app.get("/api/clock", async (c) => {
 		users: result,
 	});
 });
+
+// @see https://github.com/honojs/middleware/tree/main/packages/zod-validator
+const postUserSchema = z.object({
+	full_name: z.string(),
+});
+
+app.post(
+	"/api/user",
+	zValidator("json", postUserSchema, async (result, c) => {
+		if (!result.success) {
+			return c.text("params Invalid", 500);
+		}
+	}),
+	async (c) => {
+		const body = c.req.valid("json");
+		const db = drizzle(c.env.DB);
+		const result = await db.insert(users).values({
+			fullName: body.full_name,
+		});
+
+		if (!result.success) {
+			return c.text("Invalid", 500);
+		}
+
+		return c.json({
+			full_name: body.full_name,
+		});
+	},
+);
+
+const deleteUserSchema = z.object({
+	id: z.string(),
+});
+
+app.delete(
+	"/api/user/:id",
+	zValidator("param", deleteUserSchema, async (result, c) => {
+		if (!result.success) {
+			console.log(result.error);
+			return c.text("params Invalid", 500);
+		}
+	}),
+	async (c) => {
+		const db = drizzle(c.env.DB);
+		const userId = c.req.param("id");
+		const result = await db
+			.delete(users)
+			.where(eq(users.id, Number(userId)))
+			.returning();
+		return c.json(result);
+	},
+);
 
 app.get("*", (c) => {
 	return c.html(
