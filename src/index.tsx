@@ -7,6 +7,11 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { eq } from "drizzle-orm";
 
+type ApiType =
+	| typeof getClockRoute
+	| typeof postUserRoute
+	| typeof deleteUserRoute;
+
 type Env = {
 	Bindings: {
 		DB: D1Database;
@@ -15,7 +20,7 @@ type Env = {
 
 const app = new Hono<Env>();
 
-app.get("/api/clock", async (c) => {
+const getClockRoute = app.get("/api/clock", async (c) => {
 	const db = drizzle(c.env.DB);
 	const result = await db.select().from(users).all();
 
@@ -30,7 +35,7 @@ const postUserSchema = z.object({
 	full_name: z.string(),
 });
 
-app.post(
+const postUserRoute = app.post(
 	"/api/user",
 	zValidator("json", postUserSchema, async (result, c) => {
 		if (!result.success) {
@@ -58,7 +63,7 @@ const deleteUserSchema = z.object({
 	id: z.string(),
 });
 
-app.delete(
+const deleteUserRoute = app.delete(
 	"/api/user/:id",
 	zValidator("param", deleteUserSchema, async (result, c) => {
 		if (!result.success) {
