@@ -1,7 +1,9 @@
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { Suspense } from "react";
 
 export const Route = createRootRoute({
+	pendingComponent: () => <div>pendingComponent</div>,
 	component: () => (
 		<>
 			<div className="p-2 flex gap-2">
@@ -10,6 +12,9 @@ export const Route = createRootRoute({
 				</Link>{" "}
 				<Link to="/about" className="[&.active]:font-bold">
 					About
+				</Link>
+				<Link to="/foo" className="[&.active]:font-bold">
+					Foo
 				</Link>
 			</div>
 			<hr />

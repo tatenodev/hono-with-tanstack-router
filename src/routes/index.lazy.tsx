@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export const Route = createLazyFileRoute("/")({
 	component: Index,
+	pendingComponent: () => <div>loading...</div>,
 });
 
 function Index() {
